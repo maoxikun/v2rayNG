@@ -8,6 +8,7 @@ import com.google.gson.JsonSerializer
 import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import com.v2ray.ang.util.Utils
+import com.v2ray.ang.AppConfig
 import java.lang.reflect.Type
 
 data class V2rayConfig(
@@ -656,6 +657,21 @@ data class V2rayConfig(
                 if (outbound.protocol.equals(it.name, true)) {
                     return outbound
                 }
+            }
+        }
+        inbounds.forEach { inbound ->
+            if (inbound.protocol.equals(EConfigType.SOCKS.name.lowercase(), true)) {
+                return OutboundBean(
+                    protocol = EConfigType.SOCKS.name.lowercase(),
+                    settings = OutboundBean.OutSettingsBean(
+                        servers = listOf(
+                            OutboundBean.OutSettingsBean.ServersBean(
+                                address = "localhost",
+                                port = AppConfig.PORT_SOCKS.toInt()
+                            )
+                        )
+                    )
+                )
             }
         }
         return null
