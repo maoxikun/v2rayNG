@@ -8,8 +8,11 @@ import com.google.gson.JsonSerializer
 import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import com.v2ray.ang.AppConfig
-import com.v2ray.ang.dto.V2rayConfig.OutboundBean.OutSettingsBean.*
-import com.v2ray.ang.dto.V2rayConfig.OutboundBean.OutSettingsBean.VnextBean.*
+import com.v2ray.ang.dto.V2rayConfig.OutboundBean.OutSettingsBean.ServersBean
+import com.v2ray.ang.dto.V2rayConfig.OutboundBean.OutSettingsBean.VnextBean
+import com.v2ray.ang.dto.V2rayConfig.OutboundBean.OutSettingsBean.VnextBean.UsersBean
+import com.v2ray.ang.dto.V2rayConfig.OutboundBean.OutSettingsBean.WireGuardBean
+import com.v2ray.ang.handler.SettingsManager
 import com.v2ray.ang.util.Utils
 import java.lang.reflect.Type
 
@@ -708,6 +711,22 @@ data class V2rayConfig(
                 if (outbound.protocol.equals(it.name, true)) {
                     return outbound
                 }
+            }
+        }
+        inbounds.forEach { inbound ->
+            if (inbound.protocol.equals(EConfigType.SOCKS.name, true)) {
+                return OutboundBean(
+                    tag = AppConfig.TAG_PROXY,
+                    protocol = EConfigType.SOCKS.name.lowercase(),
+                    settings = OutboundBean.OutSettingsBean(
+                        servers = listOf(
+                            ServersBean(
+                                address = AppConfig.LOOPBACK,
+                                port = SettingsManager.getSocksPort()
+                            )
+                        )
+                    )
+                )
             }
         }
         return null
