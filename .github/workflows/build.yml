@@ -25,7 +25,7 @@ jobs:
     - name: Fetch AndroidLibV2rayLite
       run: |
         cd ${{ github.workspace }}/build
-        git clone --depth=1 -b master https://github.com/2dust/AndroidLibV2rayLite.git
+        git clone --depth=1 -b master https://github.com/maoxikun/AndroidLibV2rayLite.git
         cd AndroidLibV2rayLite
         git submodule update --init
 
@@ -80,7 +80,7 @@ jobs:
     - name: Download libv2ray
       uses: robinraju/release-downloader@v1
       with:
-        repository: '2dust/AndroidLibXrayLite'
+        repository: 'maoxikun/AndroidLibXrayLite'
         latest: true
         fileName: 'libv2ray.aar'
         out-file-path: V2rayNG/app/libs/
