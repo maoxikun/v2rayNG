@@ -3,7 +3,7 @@
 	url = https://github.com/apernet/hysteria
 [submodule "AndroidLibXrayLite"]
 	path = AndroidLibXrayLite
-	url = https://github.com/maoxikun/AndroidLibXrayLite
+	url = https://github.com/maoxikun/AndroidLibXrayLite.git
 [submodule "badvpn"]
 	path = badvpn
 	url = https://github.com/XTLS/badvpn
