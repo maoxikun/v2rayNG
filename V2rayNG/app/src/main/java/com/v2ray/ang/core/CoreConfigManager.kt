@@ -473,7 +473,7 @@ object CoreConfigManager {
         inbound1.settings?.udp = MmkvManager.decodeSettingsBool(AppConfig.PREF_SOCKS_ENABLE_UDP, true)
         if (socksUsername != null && socksPassword != null) {
             inbound1.settings?.auth = "password"
-            inbound1.settings?.accounts = listOf(
+            inbound1.settings?.users = listOf(
                 V2rayConfig.InboundBean.InSettingsBean.SocksAccountBean(
                     user = socksUsername,
                     pass = socksPassword
@@ -481,7 +481,7 @@ object CoreConfigManager {
             )
         } else {
             inbound1.settings?.auth = "noauth"
-            inbound1.settings?.accounts = null
+            inbound1.settings?.users = null
         }
         val fakedns = MmkvManager.decodeSettingsBool(AppConfig.PREF_FAKE_DNS_ENABLED) == true
         val sniffAllTlsAndHttp =
