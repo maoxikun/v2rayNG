@@ -284,7 +284,7 @@ object SettingsManager {
             } else {
                 Utils.parseInt(MmkvManager.decodeSettingsString(AppConfig.PREF_SOCKS_PORT), AppConfig.PORT_SOCKS.toInt())
             }
-        return port ?: AppConfig.PORT_SOCKS.toInt()
+        return getCustomConfigSocksInbound()?.port ?: port ?: AppConfig.PORT_SOCKS.toInt()
     }
 
     @Synchronized
@@ -297,11 +297,42 @@ object SettingsManager {
     }
 
     fun getSocksUsername(): String? {
-        return MmkvManager.decodeSettingsString(AppConfig.PREF_SOCKS_USERNAME)?.trim()?.takeIf { it.isNotEmpty() }
+        val socksInbound = getCustomConfigSocksInbound() ?: return MmkvManager.decodeSettingsString(AppConfig.PREF_SOCKS_USERNAME)?.trim()?.takeIf { it.isNotEmpty() }
+        if (socksInbound.settings?.auth != null && socksInbound.settings?.auth.equals("password")) {
+            return socksInbound.settings?.accounts?.first { it.user.isNotBlank() && it.pass.isNotBlank() }?.user
+        }
+        return null
     }
 
     fun getSocksPassword(): String? {
-        return MmkvManager.decodeSettingsString(AppConfig.PREF_SOCKS_PASSWORD)?.trim()?.takeIf { it.isNotEmpty() }
+        val socksInbound = getCustomConfigSocksInbound() ?: return MmkvManager.decodeSettingsString(AppConfig.PREF_SOCKS_PASSWORD)?.trim()?.takeIf { it.isNotEmpty() }
+        if (socksInbound.settings?.auth != null && socksInbound.settings?.auth.equals("password")) {
+            return socksInbound.settings?.accounts?.first { it.user.isNotBlank() && it.pass.isNotBlank() }?.pass
+        }
+        return null
+    }
+
+    private fun getCustomConfigSocksInbound(): V2rayConfig.InboundBean? {
+        try {
+            val guid = MmkvManager.getSelectServer() ?: return null
+            val config = decodeServerConfig(guid) ?: return null
+            if (config.configType != EConfigType.CUSTOM) {
+                return null
+            }
+            val raw = MmkvManager.decodeServerRaw(guid) ?: return null
+            val v2rayConfig = JsonUtil.fromJson(raw, V2rayConfig::class.java) ?: return null
+            val socksInbound = v2rayConfig.inbounds.firstOrNull { it.protocol == EConfigType.SOCKS.name.lowercase() } ?: return null
+            if ((socksInbound.port ?: 0) <= 0) {
+                return null
+            }
+            if (socksInbound.settings?.auth != null && socksInbound.settings?.auth.equals("password") && socksInbound.settings?.accounts?.firstOrNull { it.user.isNotBlank() && it.pass.isNotBlank() } == null) {
+                return null
+            }
+            return socksInbound
+        } catch (e: Exception) {
+            LogUtil.e(AppConfig.TAG, "Failed to get valid custom config SOCKS inbound", e)
+        }
+        return null
     }
 
     /**

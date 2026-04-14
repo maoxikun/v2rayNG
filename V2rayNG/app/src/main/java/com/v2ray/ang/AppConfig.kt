@@ -126,7 +126,7 @@ object AppConfig {
     const val DELAY_TEST_URL2 = "https://www.google.com/generate_204"
 
     //    const val IP_API_URL = "https://speed.cloudflare.com/meta"
-    const val IP_API_URL = "https://api.ip.sb/geoip"
+    const val IP_API_URL = "https://ipinfo.302000.xyz"
 
     /** DNS server addresses. */
     const val DNS_PROXY = "1.1.1.1"
