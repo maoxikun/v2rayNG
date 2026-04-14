@@ -44,7 +44,7 @@ data class V2rayConfig(
             var auth: String? = null,
             var udp: Boolean? = null,
             var userLevel: Int? = null,
-            var accounts: List<SocksAccountBean>? = null,
+            var users: List<SocksAccountBean>? = null,
             var name: String? = null,
 
             var mtu: Int? = null
